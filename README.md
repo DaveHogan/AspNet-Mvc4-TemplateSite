@@ -1,4 +1,10 @@
-HoganTemplate-AspNet-Mvc4
+Hogan Template
+AspNet Mvc4
 =========================
 
-An n-tiered Mvc project structure with concerns separated, DI, Validation and EF
+Makes use of:
+* Ninject
+* jQuery
+* ASP.NET MVC4
+* AppHarbor.Web.Security
+* NUnit
