@@ -6,7 +6,7 @@ using System.Data.Entity;
 using System.Globalization;
 using System.Web.Security;
 
-namespace MvcApplication1.Models
+namespace MvcApplication.Models
 {
     public class UsersContext : DbContext
     {
@@ -20,8 +20,6 @@ namespace MvcApplication1.Models
 
     public class UserProfile
     {
-        [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int UserId { get; set; }
         public string Email { get; set; }
     }
@@ -57,8 +55,9 @@ namespace MvcApplication1.Models
     public class LoginModel
     {
         [Required]
-        [Display(Name = "User name")]
-        public string UserName { get; set; }
+        [EmailAddress]
+        [Display(Name = "Email Address")]
+        public string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]

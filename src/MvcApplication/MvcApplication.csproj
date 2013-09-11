@@ -177,6 +177,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="CustomPrincipal.cs" />
+    <Compile Include="CustomPrincipalSerializeModel.cs" />
+    <Compile Include="ICustomPrincipal.cs" />
     <Compile Include="MyMembershipUser.cs" />
     <Compile Include="MyMembershipProvider.cs" />
     <Compile Include="MyRoleProvider.cs" />
@@ -308,6 +312,16 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Filters\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Models\Models.csproj">
+      <Project>{f9d3aa6d-313c-43eb-acc6-4c7500d05469}</Project>
+      <Name>Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ServiceLayer\ServiceLayer.csproj">
+      <Project>{0bc3000c-8553-4f61-adae-f1df039a632d}</Project>
+      <Name>ServiceLayer</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

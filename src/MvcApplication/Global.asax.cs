@@ -6,7 +6,9 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using MvcApplication1;
+using System.Web.Script.Serialization;
+using System.Web.Security;
+using MvcApplication;
 using WebMatrix.WebData;
 
 namespace MvcApplication
@@ -25,6 +27,28 @@ namespace MvcApplication
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             AuthConfig.RegisterAuth();
+        }
+
+        // Idea taken from http://stackoverflow.com/a/10524305/235644
+        protected void Application_PostAuthenticateRequest(Object sender, EventArgs e)
+        {
+            HttpCookie authCookie = Request.Cookies[FormsAuthentication.FormsCookieName];
+
+            if (authCookie != null)
+            {
+                FormsAuthenticationTicket authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+
+                CustomPrincipalSerializeModel serializeModel = serializer.Deserialize<CustomPrincipalSerializeModel>(authTicket.UserData);
+
+                CustomPrincipal newUser = new CustomPrincipal(authTicket.Name);
+                newUser.UserId = serializeModel.UserId;
+                newUser.FirstName = serializeModel.FirstName;
+                newUser.LastName = serializeModel.LastName;
+
+                HttpContext.Current.User = newUser;
+            }
         }
     }
 }

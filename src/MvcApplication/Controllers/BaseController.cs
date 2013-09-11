@@ -6,16 +6,11 @@ using System.Web.Mvc;
 
 namespace MvcApplication.Controllers
 {
-    [Authorize(Roles = "Admin")]
-    public class AdminController : BaseController
+    public abstract class BaseController : Controller
     {
-        //
-        // GET: /Admin/
-
-        public ActionResult Index()
+        protected virtual new CustomPrincipal User
         {
-            return View();
+            get { return HttpContext.User as CustomPrincipal; }
         }
-
     }
 }

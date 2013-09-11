@@ -8,16 +8,22 @@ using System.Web.Security;
 using DotNetOpenAuth.AspNet;
 using Microsoft.Web.WebPages.OAuth;
 using WebMatrix.WebData;
-using MvcApplication1.Models;
+using MvcApplication.Models;
+using ServiceLayer;
+using System.Web.Script.Serialization;
 
-namespace MvcApplication1.Controllers
+namespace MvcApplication.Controllers
 {
     [Authorize]
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
-        //
-        // GET: /Account/Login
+        private readonly IUserService _userService;
+        public AccountController(IUserService userService)
+        {
+            _userService = userService;
+        }
 
+        // GET: /Account/Login
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
@@ -25,27 +31,47 @@ namespace MvcApplication1.Controllers
             return View();
         }
 
-        //
         // POST: /Account/Login
-
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public ActionResult Login(LoginModel model, string returnUrl)
         {
-            if (ModelState.IsValid && WebSecurity.Login(model.UserName, model.Password, persistCookie: model.RememberMe))
+            if (ModelState.IsValid && _userService.IsValidUser(model.Email, model.Password))
             {
+                var user = _userService.GetByEmailAddress(model.Email);
+
+                CustomPrincipalSerializeModel serializeModel = new CustomPrincipalSerializeModel();
+                serializeModel.UserId = user.Id;
+                serializeModel.FirstName = user.FirstName;
+                serializeModel.LastName = user.LastName;
+
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+
+                string userData = serializer.Serialize(serializeModel);
+
+                FormsAuthenticationTicket authTicket = new FormsAuthenticationTicket(
+                         1,
+                         model.Email,
+                         DateTime.Now,
+                         DateTime.Now.AddMinutes(15),
+                         false,
+                         userData);
+
+                string encTicket = FormsAuthentication.Encrypt(authTicket);
+                HttpCookie faCookie = new HttpCookie(FormsAuthentication.FormsCookieName, encTicket);
+                Response.Cookies.Add(faCookie);
+
+
                 return RedirectToLocal(returnUrl);
             }
 
             // If we got this far, something failed, redisplay form
-            ModelState.AddModelError("", "The user name or password provided is incorrect.");
+            ModelState.AddModelError("", "Email address and/or password provided is incorrect.");
             return View(model);
         }
 
-        //
         // POST: /Account/LogOff
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
@@ -55,18 +81,14 @@ namespace MvcApplication1.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        //
         // GET: /Account/Register
-
         [AllowAnonymous]
         public ActionResult Register()
         {
             return View();
         }
 
-        //
         // POST: /Account/Register
-
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -91,9 +113,7 @@ namespace MvcApplication1.Controllers
             return View(model);
         }
 
-        //
         // POST: /Account/Disassociate
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Disassociate(string provider, string providerUserId)
@@ -120,9 +140,7 @@ namespace MvcApplication1.Controllers
             return RedirectToAction("Manage", new { Message = message });
         }
 
-        //
         // GET: /Account/Manage
-
         public ActionResult Manage(ManageMessageId? message)
         {
             ViewBag.StatusMessage =
@@ -135,9 +153,7 @@ namespace MvcApplication1.Controllers
             return View();
         }
 
-        //
         // POST: /Account/Manage
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Manage(LocalPasswordModel model)
@@ -198,9 +214,7 @@ namespace MvcApplication1.Controllers
             return View(model);
         }
 
-        //
         // POST: /Account/ExternalLogin
-
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -209,9 +223,7 @@ namespace MvcApplication1.Controllers
             return new ExternalLoginResult(provider, Url.Action("ExternalLoginCallback", new { ReturnUrl = returnUrl }));
         }
 
-        //
         // GET: /Account/ExternalLoginCallback
-
         [AllowAnonymous]
         public ActionResult ExternalLoginCallback(string returnUrl)
         {
@@ -242,9 +254,7 @@ namespace MvcApplication1.Controllers
             }
         }
 
-        //
         // POST: /Account/ExternalLoginConfirmation
-
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -288,9 +298,7 @@ namespace MvcApplication1.Controllers
             return View(model);
         }
 
-        //
         // GET: /Account/ExternalLoginFailure
-
         [AllowAnonymous]
         public ActionResult ExternalLoginFailure()
         {
