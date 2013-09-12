@@ -43,6 +43,12 @@
       <HintPath>..\..\packages\EntityFramework\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Ninject">
+      <HintPath>..\..\packages\Ninject\lib\net45-full\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.Mvc">
+      <HintPath>..\..\packages\Ninject.MVC3\lib\net45-full\Ninject.Web.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Entity" />
@@ -181,6 +187,7 @@
     <Compile Include="CustomPrincipal.cs" />
     <Compile Include="CustomPrincipalSerializeModel.cs" />
     <Compile Include="ICustomPrincipal.cs" />
+    <Compile Include="MvcValidationExtension.cs" />
     <Compile Include="MyMembershipUser.cs" />
     <Compile Include="MyMembershipProvider.cs" />
     <Compile Include="MyRoleProvider.cs" />
@@ -194,7 +201,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

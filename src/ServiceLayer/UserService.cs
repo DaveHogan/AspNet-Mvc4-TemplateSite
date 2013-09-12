@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Models;
+using ServiceLayer.Validators;
 
 namespace ServiceLayer
 {
@@ -15,11 +16,18 @@ namespace ServiceLayer
 
     public class UserService : IUserService
     {
+        private readonly IValidationProvider _validationProvider;
+        public UserService(IValidationProvider validationProvider)
+        {
+            _validationProvider = validationProvider;
+        }
+
         public bool IsValidUser(string emailAddress, string password)
         {
             throw new NotImplementedException();
         }
-        public User GetByEmailAddress(string emailAddress) 
+
+        public User GetByEmailAddress(string emailAddress)
         {
             throw new NotImplementedException();
         }

@@ -8,9 +8,9 @@ using System.Web.Security;
 using DotNetOpenAuth.AspNet;
 using Microsoft.Web.WebPages.OAuth;
 using WebMatrix.WebData;
-using MvcApplication.Models;
 using ServiceLayer;
 using System.Web.Script.Serialization;
+using Models.ViewModels;
 
 namespace MvcApplication.Controllers
 {
@@ -35,7 +35,7 @@ namespace MvcApplication.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(LoginModel model, string returnUrl)
+        public ActionResult Login(LoginViewModel model, string returnUrl)
         {
             if (ModelState.IsValid && _userService.IsValidUser(model.Email, model.Password))
             {
@@ -92,7 +92,7 @@ namespace MvcApplication.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult Register(RegisterModel model)
+        public ActionResult Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -156,7 +156,7 @@ namespace MvcApplication.Controllers
         // POST: /Account/Manage
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Manage(LocalPasswordModel model)
+        public ActionResult Manage(LocalPasswordViewModel model)
         {
             bool hasLocalAccount = OAuthWebSecurity.HasLocalAccount(WebSecurity.GetUserId(User.Identity.Name));
             ViewBag.HasLocalPassword = hasLocalAccount;
@@ -250,7 +250,7 @@ namespace MvcApplication.Controllers
                 string loginData = OAuthWebSecurity.SerializeProviderUserId(result.Provider, result.ProviderUserId);
                 ViewBag.ProviderDisplayName = OAuthWebSecurity.GetOAuthClientData(result.Provider).DisplayName;
                 ViewBag.ReturnUrl = returnUrl;
-                return View("ExternalLoginConfirmation", new RegisterExternalLoginModel { UserName = result.UserName, ExternalLoginData = loginData });
+                return View("ExternalLoginConfirmation", new RegisterExternalLoginViewModel { UserName = result.UserName, ExternalLoginData = loginData });
             }
         }
 
@@ -258,7 +258,7 @@ namespace MvcApplication.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult ExternalLoginConfirmation(RegisterExternalLoginModel model, string returnUrl)
+        public ActionResult ExternalLoginConfirmation(Models.ViewModels.RegisterExternalLoginViewModel model, string returnUrl)
         {
             string provider = null;
             string providerUserId = null;
@@ -271,26 +271,23 @@ namespace MvcApplication.Controllers
             if (ModelState.IsValid)
             {
                 // Insert a new user into the database
-                using (UsersContext db = new UsersContext())
-                {
-                    UserProfile user = db.UserProfiles.FirstOrDefault(u => u.Email.ToLower() == model.UserName.ToLower());
-                    // Check if user already exists
-                    if (user == null)
-                    {
-                        // Insert name into the profile table
-                        db.UserProfiles.Add(new UserProfile { Email = model.UserName });
-                        db.SaveChanges();
+                    //UserProfile user = db.UserProfiles.FirstOrDefault(u => u.Email.ToLower() == model.UserName.ToLower());
+                    //// Check if user already exists
+                    //if (user == null)
+                    //{
+                    //    // Insert name into the profile table
+                    //    db.UserProfiles.Add(new UserProfile { Email = model.UserName });
+                    //    db.SaveChanges();
 
-                        OAuthWebSecurity.CreateOrUpdateAccount(provider, providerUserId, model.UserName);
-                        OAuthWebSecurity.Login(provider, providerUserId, createPersistentCookie: false);
+                    //    OAuthWebSecurity.CreateOrUpdateAccount(provider, providerUserId, model.UserName);
+                    //    OAuthWebSecurity.Login(provider, providerUserId, createPersistentCookie: false);
 
-                        return RedirectToLocal(returnUrl);
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("UserName", "User name already exists. Please enter a different user name.");
-                    }
-                }
+                    //    return RedirectToLocal(returnUrl);
+                    //}
+                    //else
+                    //{
+                    //    ModelState.AddModelError("UserName", "User name already exists. Please enter a different user name.");
+                    //}
             }
 
             ViewBag.ProviderDisplayName = OAuthWebSecurity.GetOAuthClientData(provider).DisplayName;
@@ -317,12 +314,12 @@ namespace MvcApplication.Controllers
         public ActionResult RemoveExternalLogins()
         {
             ICollection<OAuthAccount> accounts = OAuthWebSecurity.GetAccountsFromUserName(User.Identity.Name);
-            List<ExternalLogin> externalLogins = new List<ExternalLogin>();
+            List<ExternalLoginViewModel> externalLogins = new List<ExternalLoginViewModel>();
             foreach (OAuthAccount account in accounts)
             {
                 AuthenticationClientData clientData = OAuthWebSecurity.GetOAuthClientData(account.Provider);
 
-                externalLogins.Add(new ExternalLogin
+                externalLogins.Add(new ExternalLoginViewModel
                 {
                     Provider = account.Provider,
                     ProviderDisplayName = clientData.DisplayName,
