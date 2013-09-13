@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Models;
+using ServiceLayer.Authentication;
 using ServiceLayer.Validators;
 
 namespace ServiceLayer
@@ -17,9 +18,12 @@ namespace ServiceLayer
     public class UserService : IUserService
     {
         private readonly IValidationProvider _validationProvider;
-        public UserService(IValidationProvider validationProvider)
+        private readonly ICustomPrincipal _customPrincipal;
+
+        public UserService(IValidationProvider validationProvider, ICustomPrincipal customPrincipal)
         {
             _validationProvider = validationProvider;
+            _customPrincipal = customPrincipal;
         }
 
         public bool IsValidUser(string emailAddress, string password)

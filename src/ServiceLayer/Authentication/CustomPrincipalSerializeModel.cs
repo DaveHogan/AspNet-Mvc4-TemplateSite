@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace MvcApplication
+namespace ServiceLayer.Authentication
 {
     // Idea taken from http://stackoverflow.com/a/10524305/235644
     public class CustomPrincipalSerializeModel

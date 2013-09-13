@@ -9,6 +9,7 @@ using System.Web.Routing;
 using System.Web.Script.Serialization;
 using System.Web.Security;
 using MvcApplication;
+using ServiceLayer.Authentication;
 using WebMatrix.WebData;
 
 namespace MvcApplication
@@ -40,9 +41,9 @@ namespace MvcApplication
 
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
 
-                CustomPrincipalSerializeModel serializeModel = serializer.Deserialize<CustomPrincipalSerializeModel>(authTicket.UserData);
+                var serializeModel = serializer.Deserialize<CustomPrincipalSerializeModel>(authTicket.UserData);
 
-                CustomPrincipal newUser = new CustomPrincipal(authTicket.Name);
+                var newUser = new CustomPrincipal(authTicket.Name);
                 newUser.UserId = serializeModel.UserId;
                 newUser.FirstName = serializeModel.FirstName;
                 newUser.LastName = serializeModel.LastName;

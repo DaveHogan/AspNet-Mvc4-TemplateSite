@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Principal;
 using System.Web;
 
-namespace MvcApplication
+namespace ServiceLayer.Authentication
 {
     public interface ICustomPrincipal : IPrincipal
 {

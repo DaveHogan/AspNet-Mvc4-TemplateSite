@@ -39,6 +39,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Authentication\AnonymousPrincipal.cs" />
+    <Compile Include="Authentication\CustomPrincipal.cs" />
+    <Compile Include="Authentication\CustomPrincipalSerializeModel.cs" />
+    <Compile Include="Authentication\ICustomPrincipal.cs" />
     <Compile Include="Validators\IValidationProvider.cs" />
     <Compile Include="Validators\IValidator.cs" />
     <Compile Include="Validators\NullValidator.cs" />
@@ -46,6 +50,7 @@
     <Compile Include="UserService.cs" />
     <Compile Include="Validators\UserValidator.cs" />
     <Compile Include="Validators\ValidationException.cs" />
+    <Compile Include="Validators\ValidationProvider.cs" />
     <Compile Include="Validators\ValidationResult.cs" />
     <Compile Include="Validators\Validator.cs" />
   </ItemGroup>

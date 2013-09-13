@@ -11,6 +11,7 @@ using WebMatrix.WebData;
 using ServiceLayer;
 using System.Web.Script.Serialization;
 using Models.ViewModels;
+using ServiceLayer.Authentication;
 
 namespace MvcApplication.Controllers
 {
@@ -41,7 +42,7 @@ namespace MvcApplication.Controllers
             {
                 var user = _userService.GetByEmailAddress(model.Email);
 
-                CustomPrincipalSerializeModel serializeModel = new CustomPrincipalSerializeModel();
+                var serializeModel = new CustomPrincipalSerializeModel();
                 serializeModel.UserId = user.Id;
                 serializeModel.FirstName = user.FirstName;
                 serializeModel.LastName = user.LastName;
@@ -99,8 +100,10 @@ namespace MvcApplication.Controllers
                 // Attempt to register the user
                 try
                 {
-                    WebSecurity.CreateUserAndAccount(model.UserName, model.Password);
-                    WebSecurity.Login(model.UserName, model.Password);
+                    // todo - replace with ServiceLayer logic
+                    throw new NotImplementedException("todo - replace with ServiceLayer logic");
+                    // WebSecurity.CreateUserAndAccount(model.UserName, model.Password);
+                    // WebSecurity.Login(model.UserName, model.Password);
                     return RedirectToAction("Index", "Home");
                 }
                 catch (MembershipCreateUserException e)
